@@ -146,4 +146,11 @@ public class ArrayList<E> implements IDynamicArray<E> {
 		builder.append("]");
 		return builder.toString();
 	}
+
+	@Override
+	public int remove(E element) {
+		int index = indexof(element);
+		remove(index);
+		return index;
+	}
 }

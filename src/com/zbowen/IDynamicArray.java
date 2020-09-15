@@ -55,6 +55,13 @@ public interface IDynamicArray<E> {
 	 * @return
 	 */
 	E remove(int index);
+	
+	/**
+	 * 删除element元素
+	 * @param index
+	 * @return
+	 */
+	int remove(E element);
 
 	/**
 	 * 查看元素的位置

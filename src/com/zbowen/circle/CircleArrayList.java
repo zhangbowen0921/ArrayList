@@ -26,6 +26,7 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 	public CircleArrayList(int capaticy) {
 		capaticy = capaticy>DEFAULT_CAPATICY?capaticy:DEFAULT_CAPATICY;
 		elements = (E[]) new Object[capaticy];
+		size = 0;
 	}
 
 	@Override
@@ -76,9 +77,8 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 		ensureCapaticy();
 		if (index==0) {
 			first -= 1;
-			if(first<0) {
-				first += elements.length;
-			}
+			if(first<0) first += elements.length;
+			if (size==0) first = 0;
 			elements[first] = element;
 		}else if(index==size) {
 			index = first + size - elements.length;
@@ -93,10 +93,11 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 				//计算出 尾元素的 索引
 				int end = first + size - elements.length - 1;
 				if (end<0) {
-					end = first + index - 1;
+					end = first + size - 1;
 				}
 				//将index及以后的元素往后挪动一个位置
 				for (int i = size; i > index; i--) {
+					System.out.println("往后移动");
 					int next = end + 1;
 					if (next == elements.length) {
 						next = 0;
@@ -119,7 +120,8 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 				if(first<0) {
 					first = elements.length - 1;
 				}
-				for (int i = 0; i <= index; i++) {
+				for (int i = 0; i < index; i++) {
+					System.out.println("往前移动");
 					int next = oldFirst - 1;
 					if (next < 0) {
 						next = elements.length - 1;
@@ -143,6 +145,28 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 	private void ensureCapaticy() {
 		if (size<elements.length) return;
 		int capaticy = size + (size >> 1);
+		System.out.println("扩容到："+capaticy);
+		E[] temp = (E[]) new Object[capaticy];
+		int index = first;
+		for (int i = 0; i < size; i++) {
+			if (index>=elements.length) {
+				index = 0;
+			}
+			temp[i] = elements[index];
+			index += 1;
+		}
+		elements = temp;
+		first = 0;
+	}
+	
+	private void reduceCapaticy() {
+		if (elements.length<=DEFAULT_CAPATICY) return;
+		int half = elements.length>>1;
+		if (size > half) return;
+		//如果数组中存储的元素还不及数组长度的一半 就进行缩容 前提 缩小一半
+		//int capaticy = half + (half>>1);
+		int capaticy = half;
+		System.out.println("缩容到"+capaticy);
 		E[] temp = (E[]) new Object[capaticy];
 		int index = first;
 		for (int i = 0; i < size; i++) {
@@ -158,7 +182,64 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 
 	@Override
 	public E remove(int index) {
-		return null;
+		rangeCheck(index);
+		E oldElement = null;
+		if (index==0) {
+			//删除头部元素 
+			oldElement = elements[first];
+			elements[first] = null;
+			first += 1;
+			if(first==elements.length) first = 0;
+		}else if (index == size-1) {
+			//删除尾部元素
+			index = first + size - elements.length - 1;
+			if (index<0) {
+				index = first + size - 1;
+			}
+			oldElement = elements[index];
+			elements[index--] = null;
+		}else {
+			//删除中间元素
+			int temp = size - index - 1;
+			if (index > temp) { //index后面的元素往前挪动
+				//计算出index索引对应的真实索引
+				int realIndex = first + index - elements.length;
+				if (realIndex<0) {
+					realIndex = first + index;
+				}
+				oldElement = elements[realIndex];
+				for (int i = 0; i < temp; i++) {
+					int next = realIndex + 1;
+					if (next >= elements.length) {
+						next = 0;
+					}
+					elements[realIndex] = elements[next];
+					realIndex = next;
+				}
+				
+				elements[realIndex] = null;
+			}else { //index 前面的元素往后挪动
+				//计算出index索引对应的真实索引
+				int realIndex = first + index - elements.length;
+				if (realIndex<0) {
+					realIndex = first + index;
+				}
+				oldElement = elements[realIndex];
+				for (int i = 0; i < index; i++) {
+					int pre = realIndex-1;
+					if (pre<0) {
+						pre = elements.length - 1;
+					}
+					elements[realIndex] = elements[pre];
+					realIndex = pre;
+				}
+				elements[first] = null;
+				first = first + 1 >= elements.length?0:first + 1;
+			}
+		}
+		size--;
+		reduceCapaticy();
+		return oldElement;
 	}
 
 	@Override
@@ -192,7 +273,9 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
  
 	@Override
 	public void clear() {
-		
+		size = 0;
+		first = 0;
+		elements = (E[]) new Object[DEFAULT_CAPATICY];
 	}
 	
 	private void rangeCheck(int index) {
@@ -227,6 +310,13 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 		}
 		sb.append("]");
 		return sb.toString();
+	}
+
+	@Override
+	public int remove(E element) {
+		int index = indexof(element);
+		remove(index);
+		return index;
 	}
 	
 }
