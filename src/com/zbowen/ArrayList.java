@@ -148,7 +148,7 @@ public class ArrayList<E> implements IDynamicArray<E> {
 	}
 
 	@Override
-	public int remove(E element) {
+	public int removeElement(E element) {
 		int index = indexof(element);
 		remove(index);
 		return index;

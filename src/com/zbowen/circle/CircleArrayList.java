@@ -97,7 +97,7 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 				}
 				//将index及以后的元素往后挪动一个位置
 				for (int i = size; i > index; i--) {
-					System.out.println("往后移动");
+					//System.out.println("往后移动");
 					int next = end + 1;
 					if (next == elements.length) {
 						next = 0;
@@ -121,7 +121,7 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 					first = elements.length - 1;
 				}
 				for (int i = 0; i < index; i++) {
-					System.out.println("往前移动");
+					//System.out.println("往前移动");
 					int next = oldFirst - 1;
 					if (next < 0) {
 						next = elements.length - 1;
@@ -145,7 +145,7 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 	private void ensureCapaticy() {
 		if (size<elements.length) return;
 		int capaticy = size + (size >> 1);
-		System.out.println("扩容到："+capaticy);
+		//System.out.println("扩容到："+capaticy);
 		E[] temp = (E[]) new Object[capaticy];
 		int index = first;
 		for (int i = 0; i < size; i++) {
@@ -166,7 +166,7 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 		//如果数组中存储的元素还不及数组长度的一半 就进行缩容 前提 缩小一半
 		//int capaticy = half + (half>>1);
 		int capaticy = half;
-		System.out.println("缩容到"+capaticy);
+		//System.out.println("缩容到"+capaticy);
 		E[] temp = (E[]) new Object[capaticy];
 		int index = first;
 		for (int i = 0; i < size; i++) {
@@ -313,7 +313,7 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 	}
 
 	@Override
-	public int remove(E element) {
+	public int removeElement(E element) {
 		int index = indexof(element);
 		remove(index);
 		return index;
