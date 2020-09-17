@@ -10,7 +10,7 @@ public class Main {
 		list.add(13);
 		list.add(14);
 		list.add(15); 
-		int remove = list.remove(15);
+		int remove = list.remove(3);
 		System.out.println(remove);  //13
 		list.add(0, 1);
 		list.add(0, 2);

@@ -1,5 +1,7 @@
 package com.zbowen;
 
+import com.zbowen.circle.CircleArrayList;
+
 /**
  * 自己实现 动态数组
  * 
@@ -19,7 +21,7 @@ public class ArrayList<E> implements IDynamicArray<E> {
 		elements = (E[]) new Object[capaticy];
 	}
 
-	public ArrayList() {
+	public ArrayList() { 
 		this(DEFAULT_CAPATICY);
 	}
 
@@ -70,7 +72,8 @@ public class ArrayList<E> implements IDynamicArray<E> {
 	private void ensureCapaticy() {
 		if (size >= elements.length) {
 			// 扩容
-			int newCapaticy = size + (size >> 2);
+			int newCapaticy = size + (size >> 1);
+			System.out.println("数组扩容："+size+"-->"+newCapaticy);
 			E[] arr = (E[]) new Object[newCapaticy];
 			for (int i = 0; i < elements.length; i++) {
 				arr[i] = elements[i];
@@ -103,7 +106,7 @@ public class ArrayList<E> implements IDynamicArray<E> {
 		for (int i = index + 1; i < size; i++) {
 			elements[i-1] = elements[i];
 		}
-		elements[size--] = null;
+		elements[--size] = null;
 		return remove;
 	}
 
@@ -137,7 +140,7 @@ public class ArrayList<E> implements IDynamicArray<E> {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[");
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < elements.length; i++) {
 			if (i != 0) {
 				builder.append(", ");
 			}
@@ -152,5 +155,34 @@ public class ArrayList<E> implements IDynamicArray<E> {
 		int index = indexof(element);
 		remove(index);
 		return index;
+	}
+	
+	public static void main(String[] args) {
+		//注意：这里的ArrayList是我们自己实现的ArrayList 不是java.util.ArrayList<E>
+		//ArrayList<Integer> list = new ArrayList<Integer>();
+		//优化后的ArrayList ---> CircleArrayList
+		CircleArrayList<Integer> list = new CircleArrayList<Integer>();
+		//首先往集合里面存储10个元素看一下底层的存储过程
+		System.out.println(list);
+		for (int i = 0; i < 10; i++) {
+			list.add(0, i+1);
+			System.out.println(list);
+		}
+		//然后 继续添加一个 这时数组应该需要扩容
+		list.add(11);
+		System.out.println(list);
+		//删除集合index==0号位置的元素 
+		list.remove(0);
+		System.out.println(list);
+		//向index==0的位置添加10个元素
+		for (int i = 90; i < 100; i++) {
+			list.add(0, i);
+			System.out.println(list);
+		}
+		//向index==0的位置删除12个元素
+		for (int i = 0; i < 12; i++) {
+			list.remove(0);
+			System.out.println(list);
+		}
 	}
 }

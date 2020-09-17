@@ -145,7 +145,7 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 	private void ensureCapaticy() {
 		if (size<elements.length) return;
 		int capaticy = size + (size >> 1);
-		//System.out.println("扩容到："+capaticy);
+		System.out.println("数组扩："+size+"-->"+capaticy);
 		E[] temp = (E[]) new Object[capaticy];
 		int index = first;
 		for (int i = 0; i < size; i++) {
@@ -166,7 +166,7 @@ public class CircleArrayList<E> implements IDynamicArray<E> {
 		//如果数组中存储的元素还不及数组长度的一半 就进行缩容 前提 缩小一半
 		//int capaticy = half + (half>>1);
 		int capaticy = half;
-		//System.out.println("缩容到"+capaticy);
+		System.out.println("数组缩容"+elements.length+"-->"+capaticy);
 		E[] temp = (E[]) new Object[capaticy];
 		int index = first;
 		for (int i = 0; i < size; i++) {
